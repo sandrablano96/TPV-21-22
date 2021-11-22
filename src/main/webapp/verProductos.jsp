@@ -15,22 +15,45 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-       
+        <style>
+            td {
+                width: 30%;
+            }
+        </style>
     </head>
-    <body>
-        <table class="table table-striped">
-
-            <% 
+    <body> 
+        <% 
             List<Productos> listado = (List<Productos>) request.getAttribute("productos");
+            String mensaje = (String) request.getAttribute("mensaje");
             for (Productos p: listado){ %>
+            
+        <% if (mensaje != ""){ %>
+                <h2 class="alert alert-success"> <%= mensaje %> </h2>
+           <% }%>
+        
+        
+        <table class="table table-striped">
             <tr>
                 <td> <%=p.getNombre() %> </td>
                 <td> <%= p.getPrecio() %> </td>
-                <td><a href="Servlet?op=borrar&id=<%=p.getId() %>">Borrar</a></td>
-               
+                <td> <%= p.getCategoria() %></td>
+                <td><a href="Servlet?op=borrar&id=<%=p.getId() %>" onclick="return Confirmacion()">Borrar</a></td>
+                <td><a href="Servlet?op=actualizar&id=<%=p.getId() %>">Actualizar</a></td>
              </tr>
             <% } %>
         </table>
-        
+        <script>
+            function Confirmacion(){
+                if(confirm ("¿Esta seguro de que \n\ quiere eliminar el producto")){
+                    alert("El registro se eliminara");
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+                
+                
+            
+        </script>
     </body>
 </html>

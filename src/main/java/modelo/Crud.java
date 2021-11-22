@@ -29,11 +29,36 @@ public class Crud {
     public static int destroyProducto(int id){
     EntityManagerFactory factory = Persistence.createEntityManagerFactory("my_persistence_unit");
         EntityManager manager = factory.createEntityManager();
-        String sql = "delete FROM productos p where p.id ="+ id;
-        Query q = manager.createNativeQuery(sql,Productos.class); 
+        String sql = "DELETE from Productos p WHERE p.id = " + id;
+        Query q = manager.createQuery(sql); 
         manager.getTransaction().begin();
         int filasAfectadas = q.executeUpdate();
         manager.getTransaction().commit();
         return filasAfectadas;
+    }
+    
+    public static Productos getProducto(int id){
+         EntityManagerFactory factory = Persistence.createEntityManagerFactory("my_persistence_unit");
+        EntityManager manager = factory.createEntityManager();
+        String sql = "SELECT p FROM Productos p WHERE p.id=" + id; //consulta en JPQL 
+        Query q = manager.createQuery(sql,Productos.class); //método para consultas en JPQL
+        Productos producto = (Productos) q.getSingleResult();
+        return producto;
+    }
+    
+    public static int actualizarProducto(Productos prod){
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("my_persistence_unit");
+        EntityManager manager = factory.createEntityManager();
+        String sql = "UPDATE Productos p SET p.nombre = :nombre, p.categoria = :categoria, p.precio = :precio WHERE p.id = :id";
+        Query q = manager.createQuery(sql,Productos.class);
+        q.setParameter("categoria", prod.getCategoria());
+        q.setParameter("nombre", prod.getNombre());
+        q.setParameter("precio", prod.getPrecio());
+        q.setParameter("id", prod.getId());
+        manager.getTransaction().begin();
+        int filasAfectadas = q.executeUpdate();
+        manager.getTransaction().commit();
+        //manager.close();
+        return filasAfectadas;      
     }
 }

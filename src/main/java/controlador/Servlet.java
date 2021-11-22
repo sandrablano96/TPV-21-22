@@ -35,14 +35,52 @@ public class Servlet extends HttpServlet {
         List<Productos> listado = Crud.getProductos();
         String operacion = request.getParameter("op");
 
+        /**
+         * LISTAR
+         */
         if (operacion.equals("listar")) {
-
             request.setAttribute("productos", listado);
+            request.setAttribute("mensaje", "");
             request.getRequestDispatcher("verProductos.jsp").forward(request, response);
+            /**
+             * BORRAR
+             */
         } else if (operacion.equals("borrar")) {
-            listado.remove(request.getParameter("id"));
+            int id = Integer.parseInt(request.getParameter("id"));
+            if (Crud.destroyProducto(id) != 0) {
+                request.setAttribute("mensaje", "Produco con id " + id + " borrado");
+                request.getRequestDispatcher("verProductos.jsp").forward(request, response);
+            } else {
+                request.setAttribute("mensaje", "No se ha podido eliminar");
+                request.setAttribute("productos", listado);
+                request.getRequestDispatcher("verProductos.jsp").forward(request, response);
+            }
+            /**
+             * ACTUALIZAR
+             */
+        } else if (operacion.equals("actualizar")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Productos prod = Crud.getProducto(id);
+            request.setAttribute("producto", prod);
+            request.getRequestDispatcher("actualizar.jsp").forward(request, response);
+        } /**
+         * ACTUALIZAR DATOS
+         */
+        else if (operacion.equals("actualizarDatos")) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String nombre = request.getParameter("nombre");
+            float precio = Float.parseFloat(request.getParameter("precio"));
+            String categoria = request.getParameter("categoria");
+            Productos prod = new Productos(id, nombre, categoria, precio);
+            if (Crud.actualizarProducto(prod) != 0) {
+                request.setAttribute("mensaje", "Producto con id " + id + " actualizado");
+                request.setAttribute("producto", prod);
+                request.getRequestDispatcher("actualizar.jsp").forward(request, response);
+            } else {
+                request.setAttribute("mensaje", "No se ha podido actualizar"); 
+                request.getRequestDispatcher("actualizar.jsp").forward(request, response);
+            }
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
