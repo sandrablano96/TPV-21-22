@@ -25,13 +25,13 @@
         <% 
             List<Productos> listado = (List<Productos>) request.getAttribute("productos");
             String mensaje = (String) request.getAttribute("mensaje");
-            for (Productos p: listado){ %>
+        %>
+       
             
         <% if (mensaje != ""){ %>
                 <h2 class="alert alert-success"> <%= mensaje %> </h2>
-           <% }%>
-        
-        
+                  
+        <% }     for (Productos p: listado){ %>
         <table class="table table-striped">
             <tr>
                 <td> <%=p.getNombre() %> </td>
